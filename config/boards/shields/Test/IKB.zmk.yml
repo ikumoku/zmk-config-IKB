@@ -1,0 +1,8 @@
+file_format: "1"
+id: IKB
+name: IKB
+type: shield
+url: https://github.com/kumamuk-git/zmk-config-IKB
+requires: [seeeduino_xiao_ble]
+features:
+  - keys
