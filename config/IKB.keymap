@@ -123,10 +123,10 @@
 
         FUNCTION {
             bindings = <
-&kp ESC    &kp LS(NUMBER_2)  &kp LS(NUMBER_3)  &kt F12    &kp F13                      &kp F1  &kp F2   &kp F3  &kp F4  &kp F5
-&kp LC(A)  &kp LC(S)         &kp LC(Y)         &kp F5     &kp F6                       &kp F6  &kp F13  &kp F6  &kp F7  &kp F8
-&kp LC(Z)  &kp LC(X)         &kp LC(C)         &kp LC(V)  &trans   &trans      &trans  &trans  &trans   &trans  &trans  &trans
-&trans     &trans            &trans            &trans     &trans   &trans      &trans  &trans                   &trans  &trans
+&kp ESC    &kp LS(NUMBER_2)  &kp LS(NUMBER_3)  &kt F12    &kp F13                      &kp F1  &kp F2    &kp F3  &kp F4    &kp F5
+&kp LC(A)  &kp LC(S)         &kp LC(Y)         &kp F5     &kp F6                       &kp F6  &mkp MB1  &mo 5   &mkp MB2  &mkp MB3
+&kp LC(Z)  &kp LC(X)         &kp LC(C)         &kp LC(V)  &trans   &trans      &trans  &trans  &trans    &trans  &trans    &trans
+&trans     &trans            &trans            &trans     &trans   &trans      &trans  &trans                    &trans    &trans
             >;
         };
 
