@@ -13,7 +13,7 @@ manifest:
 
     - name: zmk-pmw3610-driver
       remote: your-git
-      revision: 72590a3
+      revision: 75b11ae
 
   self:
     path: config
