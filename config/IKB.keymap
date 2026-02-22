@@ -180,7 +180,7 @@
         layer_7 {
             bindings = <
 &kp LA(F)  &kp A          &kp LS(W)      &kp LA(W)      &kp LA(T)                      &trans  &trans  &trans  &trans  &trans
-&trans     &kp LS(LC(L))  &kp LC(LS(O))  &kp LS(LC(R))  &kp LA(B)                      &trans  &trans  &trans  &trans  &trans
+&kp B      &kp LS(LC(L))  &kp LC(LS(O))  &kp LS(LC(R))  &kp LA(B)                      &trans  &trans  &trans  &trans  &trans
 &trans     &trans         &kp LS(LC(B))  &trans         &trans     &trans      &trans  &trans  &trans  &trans  &trans  &trans
 &trans     &trans         &trans         &trans         &trans     &trans      &trans  &trans                  &trans  &trans
             >;
