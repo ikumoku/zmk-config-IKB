@@ -1,15 +1,16 @@
 /* =========================================================
- * Date: 2026-04-09 22:13
+ * Date: 2026-04-09 22:35
  * Filename: config/boards/shields/Test/IKB_R.overlay
  * @details
  * 右手側（IKB_R）のハードウェア・デバイスツリー定義ファイルです。
- * 名前の衝突を避けるため、互換性ラベルを pixart,pmw3610-alt に変更しています。
- * 新しいドライバー仕様に基づき、CPI(解像度)やX/Yの反転設定を
- * .conf ファイルからこちらのデバイスツリーノードに移動しました。
- * スクロール等のレイヤー設定はZMK標準のリスナー制御に移行したため無効化しています。
+ * badjeff版ドライバーが必須プロパティとして要求する、
+ * Zephyr標準の入力イベントタイプ（相対移動を示す evt-type など）を
+ * 追記し、ビルドエラーを解消します。
  * ========================================================= */
 
 #include "IKB.dtsi"
+/* 【追加】Zephyrの入力イベントコードの定義を読み込む */
+#include <zephyr/dt-bindings/input/input-event-codes.h>
 
 &default_transform {
     col-offset = <6>;
@@ -63,24 +64,21 @@
 
     trackball: trackball@0 {
         status = "okay";
-        /* 名前衝突回避のため -alt を付与 */
         compatible = "pixart,pmw3610-alt";
         reg = <0>;
         spi-max-frequency = <2000000>;
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         
-        /* 旧 .conf から .overlay へ移動してきた機能 */
         cpi = <400>;
         invert-x;
         invert-y;
 
-        /*
-         * 【重要】新仕様では以下の機能はドライバーから削除され、
-         * ZMK本体の機能（keymapの zmk,input-listener）で制御するようになりました。
-         * ビルドエラーを防ぐため、コメントアウト（無効化）して残しています。
-         * automouse-layer = <4>;
-         * scroll-layers = <5>;
-         */
+        /* ---------------------------------------------------
+         * 【追加】入力イベントタイプの明示（これを入れないとエラーになります）
+         * --------------------------------------------------- */
+        evt-type = <INPUT_EV_REL>;
+        x-input-code = <INPUT_REL_X>;
+        y-input-code = <INPUT_REL_Y>;
     };
 };
 
