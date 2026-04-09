@@ -1,3 +1,13 @@
+/* =========================================================
+ * Date: 2026-04-09 22:15
+ * Filename: config/boards/shields/Test/IKB_R.overlay
+ * @details
+ * 右手側（IKB_R）のハードウェア定義ファイルです。
+ * PMW3610ドライバーを最新版に更新したことに伴い、
+ * 互換性ラベル(compatible)の指定を最新の仕様に変更しました。
+ * これにより、最終リンク時の undefined reference エラーを解消します。
+ * ========================================================= */
+
 #include "IKB.dtsi"
 
 &default_transform {
@@ -37,7 +47,7 @@
                 <NRF_PSEL(SPIM_MOSI, 0, 4)>,
                 <NRF_PSEL(SPIM_MISO, 0, 4)>;
             low-power-enable;
-};                              
+        };                              
     };
 };
 
@@ -53,7 +63,11 @@
 
     trackball: trackball@0 {
         status = "okay";
-        compatible = "pixart,pmw3610-alt";
+        /* ---------------------------------------------------
+         * 変更点：最新のinorichiドライバーに合わせてcompatibleを変更
+         * 古い "pixart,pmw3610-alt" から "pixart,pmw3610" に変更します。
+         * --------------------------------------------------- */
+        compatible = "pixart,pmw3610";
         reg = <0>;
         spi-max-frequency = <2000000>;
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
@@ -67,6 +81,3 @@
 &usbd {
     status = "okay";
 };
-
-
-
