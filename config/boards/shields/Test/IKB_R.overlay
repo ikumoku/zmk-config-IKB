@@ -1,16 +1,18 @@
 /* =========================================================
- * Date: 2026-04-09 22:35
+ * Date: 2026-04-09 22:50
  * Filename: config/boards/shields/Test/IKB_R.overlay
  * @details
  * 右手側（IKB_R）のハードウェア・デバイスツリー定義ファイルです。
- * badjeff版ドライバーが必須プロパティとして要求する、
- * Zephyr標準の入力イベントタイプ（相対移動を示す evt-type など）を
- * 追記し、ビルドエラーを解消します。
+ * 上下が逆になる問題（Y軸の反転）を、ドライバー側の invert-y プロパティを
+ * 削除することで修正しました。また、最新のZMK入力システム（Input Processor）
+ * を利用して、オートマウスレイヤー（AML）の自動切り替え機能を復元しました。
+ * トラックボール操作時にレイヤー1へ自動移行し、700ms後に元のレイヤーへ戻ります。
  * ========================================================= */
 
 #include "IKB.dtsi"
-/* 【追加】Zephyrの入力イベントコードの定義を読み込む */
 #include <zephyr/dt-bindings/input/input-event-codes.h>
+/* ZMKの入力プロセッサ（AML等）を使用するための定義 */
+#include <input/processors.dtsi>
 
 &default_transform {
     col-offset = <6>;
@@ -30,6 +32,12 @@
     trackball_listener {
         compatible = "zmk,input-listener";
         device = <&trackball>;
+        
+        /* * オートマウスレイヤー（AML）の復元
+         * ボールを動かすと「レイヤー1」に切り替わり「700ms」維持します。
+         * もし以前のレイヤーが4だった場合は <&zip_temp_layer 4 700> に変更してください。
+         */
+        input-processors = <&zip_temp_layer 1 700>;
     };
 };
 
@@ -70,12 +78,12 @@
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         
         cpi = <400>;
-        invert-x;
-        invert-y;
 
-        /* ---------------------------------------------------
-         * 【追加】入力イベントタイプの明示（これを入れないとエラーになります）
-         * --------------------------------------------------- */
+        /* * Y軸（上下）の反転を修正しました。
+         * X軸（左右）も逆の場合は、ここにある invert-x; を消してください。
+         */
+        invert-x;
+
         evt-type = <INPUT_EV_REL>;
         x-input-code = <INPUT_REL_X>;
         y-input-code = <INPUT_REL_Y>;
