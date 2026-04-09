@@ -1,11 +1,12 @@
 /* =========================================================
- * Date: 2026-04-09 22:15
+ * Date: 2026-04-09 22:13
  * Filename: config/boards/shields/Test/IKB_R.overlay
  * @details
- * 右手側（IKB_R）のハードウェア定義ファイルです。
- * PMW3610ドライバーを最新版に更新したことに伴い、
- * 互換性ラベル(compatible)の指定を最新の仕様に変更しました。
- * これにより、最終リンク時の undefined reference エラーを解消します。
+ * 右手側（IKB_R）のハードウェア・デバイスツリー定義ファイルです。
+ * 名前の衝突を避けるため、互換性ラベルを pixart,pmw3610-alt に変更しています。
+ * 新しいドライバー仕様に基づき、CPI(解像度)やX/Yの反転設定を
+ * .conf ファイルからこちらのデバイスツリーノードに移動しました。
+ * スクロール等のレイヤー設定はZMK標準のリスナー制御に移行したため無効化しています。
  * ========================================================= */
 
 #include "IKB.dtsi"
@@ -15,20 +16,19 @@
 };
 
 &kscan0 {
-        col-gpios
-            = <&xiao_d 10 GPIO_ACTIVE_HIGH>
-            , <&xiao_d 9 GPIO_ACTIVE_HIGH> 
-            , <&xiao_d 8 GPIO_ACTIVE_HIGH> 
-            , <&xiao_d 7 GPIO_ACTIVE_HIGH> 
-            , <&gpio0 10 GPIO_ACTIVE_HIGH>
-            ;
+    col-gpios
+        = <&xiao_d 10 GPIO_ACTIVE_HIGH>
+        , <&xiao_d 9 GPIO_ACTIVE_HIGH> 
+        , <&xiao_d 8 GPIO_ACTIVE_HIGH> 
+        , <&xiao_d 7 GPIO_ACTIVE_HIGH> 
+        , <&gpio0 10 GPIO_ACTIVE_HIGH>
+        ;
 };
 
 / {
     trackball_listener {
         compatible = "zmk,input-listener";
         device = <&trackball>;
-
     };
 };
 
@@ -63,18 +63,24 @@
 
     trackball: trackball@0 {
         status = "okay";
-        /* ---------------------------------------------------
-         * 変更点：最新のinorichiドライバーに合わせてcompatibleを変更
-         * 古い "pixart,pmw3610-alt" から "pixart,pmw3610" に変更します。
-         * --------------------------------------------------- */
-        compatible = "pixart,pmw3610";
+        /* 名前衝突回避のため -alt を付与 */
+        compatible = "pixart,pmw3610-alt";
         reg = <0>;
         spi-max-frequency = <2000000>;
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        automouse-layer = <4>;
-  
-        scroll-layers = <5>;
-       
+        
+        /* 旧 .conf から .overlay へ移動してきた機能 */
+        cpi = <400>;
+        invert-x;
+        invert-y;
+
+        /*
+         * 【重要】新仕様では以下の機能はドライバーから削除され、
+         * ZMK本体の機能（keymapの zmk,input-listener）で制御するようになりました。
+         * ビルドエラーを防ぐため、コメントアウト（無効化）して残しています。
+         * automouse-layer = <4>;
+         * scroll-layers = <5>;
+         */
     };
 };
 
