@@ -1,35 +1,31 @@
 # =========================================================
-# Date: 2026-04-09 20:36
+# Date: 2026-04-09 22:13
 # Filename: config/west.yml
 # @details
 # ZMKファームウェアの外部モジュール依存関係を定義するファイルです。
-# 現在ご自身のフォーク(your-git)の古いコミット(75b11ae)を参照しているため、
-# 新しいZMK(Zephyr 3.5)のビルドで初期化エラーが発生しています。
-# 解決策として、Zephyr 3.5に正式対応済みの「inorichi」公式リポジトリの
-# mainブランチを参照するように構成を変更し、ビルドエラーを解消します。
+# Zephyr 4.1.0で標準搭載されたPMW3610ドライバーとの「名前衝突」を
+# 回避するため、取得先を「inorichi」から「badjeff」に変更しています。
+# これにより、互換性ラベルが pixart,pmw3610-alt に変更され、
+# OSネイティブのドライバーと共存（競合回避）できるようになります。
 # =========================================================
 
 manifest:
   remotes:
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
-    # inorichiの公式リポジトリを追加
-    - name: inorichi
-      url-base: https://github.com/inorichi
-    # 既存のご自身のGitの定義も念のため残しておきます
+    - name: badjeff
+      url-base: https://github.com/badjeff
     - name: your-git
       url-base: https://github.com/ikumoku
 
   projects:
     - name: zmk
       remote: zmkfirmware
-      # ZMK本体のリビジョンは変更前のものをそのまま維持します
       revision: 040238a97dfb55ad84867c007944809425f1befe
       import: app/west.yml
 
     - name: zmk-pmw3610-driver
-      # 自身の古いフォークではなく、対応済みの公式(inorichi)のmainを指定します
-      remote: inorichi
+      remote: badjeff
       revision: main
 
   self:
