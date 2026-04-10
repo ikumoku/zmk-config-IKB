@@ -1,10 +1,11 @@
 /* =========================================================
- * Date: 2026-04-10 20:00
+ * Date: 2026-04-10 20:15
  * Filename: config/boards/shields/Test/IKB_R.overlay
  * @details
  * 右手側（IKB_R）のハードウェア定義ファイルです。
  * スクロール変換プロセッサ（zip_xy_to_scroll_mapper）を正しく
- * 認識させるため、ZMK標準のビヘイビア定義（behaviors.dtsi）をインクルードしました。
+ * 認識させるため、専用の辞書ファイル（input/processors.dtsi）を
+ * インクルードしました。これでビルドエラーが解消されます。
  * ========================================================= */
 
 #include "IKB.dtsi"
@@ -12,9 +13,9 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /* ---------------------------------------------------
- * 【追加】これがないとスクロールマッパーが認識されません
+ * 【修正】正しい入力プロセッサ用の辞書ファイルを読み込む
  * --------------------------------------------------- */
-#include <behaviors.dtsi>
+#include <input/processors.dtsi>
 
 &default_transform {
     col-offset = <6>;
@@ -37,7 +38,6 @@
 
         scroll_layer_5 {
             layers = <5>;
-            /* behaviors.dtsi を読み込んだことで、これが使えるようになります */
             input-processors = <&zip_xy_to_scroll_mapper>;
         };
     };
