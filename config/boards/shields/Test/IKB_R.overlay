@@ -1,17 +1,20 @@
 /* =========================================================
- * Date: 2026-04-10 19:46
+ * Date: 2026-04-10 20:00
  * Filename: config/boards/shields/Test/IKB_R.overlay
  * @details
  * 右手側（IKB_R）のハードウェア定義ファイルです。
- * 左手側のビルドエラー（undefined node label 'trackball'）を回避するため、
- * IKB.keymapに記載していた「レイヤー5でのスクロール変換ロジック」を、
- * トラックボールが物理的に存在するこちらのファイルに移動しました。
+ * スクロール変換プロセッサ（zip_xy_to_scroll_mapper）を正しく
+ * 認識させるため、ZMK標準のビヘイビア定義（behaviors.dtsi）をインクルードしました。
  * ========================================================= */
 
 #include "IKB.dtsi"
 #include <zephyr/dt-bindings/input/input-event-codes.h>
-/* 【追加】スクロール変換機能を使うためのヘッダー */
 #include <dt-bindings/zmk/pointing.h>
+
+/* ---------------------------------------------------
+ * 【追加】これがないとスクロールマッパーが認識されません
+ * --------------------------------------------------- */
+#include <behaviors.dtsi>
 
 &default_transform {
     col-offset = <6>;
@@ -32,12 +35,9 @@
         compatible = "zmk,input-listener";
         device = <&trackball>;
 
-        /* ---------------------------------------------------
-         * 【移動】IKB.keymapからこちらに移動しました
-         * レイヤー5の時だけ、移動信号をスクロール信号に変換します
-         * --------------------------------------------------- */
         scroll_layer_5 {
             layers = <5>;
+            /* behaviors.dtsi を読み込んだことで、これが使えるようになります */
             input-processors = <&zip_xy_to_scroll_mapper>;
         };
     };
