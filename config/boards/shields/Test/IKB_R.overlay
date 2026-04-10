@@ -1,18 +1,17 @@
 /* =========================================================
- * Date: 2026-04-09 22:50
+ * Date: 2026-04-10 19:46
  * Filename: config/boards/shields/Test/IKB_R.overlay
  * @details
- * 右手側（IKB_R）のハードウェア・デバイスツリー定義ファイルです。
- * 上下が逆になる問題（Y軸の反転）を、ドライバー側の invert-y プロパティを
- * 削除することで修正しました。また、最新のZMK入力システム（Input Processor）
- * を利用して、オートマウスレイヤー（AML）の自動切り替え機能を復元しました。
- * トラックボール操作時にレイヤー1へ自動移行し、700ms後に元のレイヤーへ戻ります。
+ * 右手側（IKB_R）のハードウェア定義ファイルです。
+ * 左手側のビルドエラー（undefined node label 'trackball'）を回避するため、
+ * IKB.keymapに記載していた「レイヤー5でのスクロール変換ロジック」を、
+ * トラックボールが物理的に存在するこちらのファイルに移動しました。
  * ========================================================= */
 
 #include "IKB.dtsi"
 #include <zephyr/dt-bindings/input/input-event-codes.h>
-/* ZMKの入力プロセッサ（AML等）を使用するための定義 */
-#include <input/processors.dtsi>
+/* 【追加】スクロール変換機能を使うためのヘッダー */
+#include <dt-bindings/zmk/pointing.h>
 
 &default_transform {
     col-offset = <6>;
@@ -32,12 +31,15 @@
     trackball_listener {
         compatible = "zmk,input-listener";
         device = <&trackball>;
-        
-        /* * オートマウスレイヤー（AML）の復元
-         * ボールを動かすと「レイヤー1」に切り替わり「700ms」維持します。
-         * もし以前のレイヤーが4だった場合は <&zip_temp_layer 4 700> に変更してください。
-         */
-        input-processors = <&zip_temp_layer 1 700>;
+
+        /* ---------------------------------------------------
+         * 【移動】IKB.keymapからこちらに移動しました
+         * レイヤー5の時だけ、移動信号をスクロール信号に変換します
+         * --------------------------------------------------- */
+        scroll_layer_5 {
+            layers = <5>;
+            input-processors = <&zip_xy_to_scroll_mapper>;
+        };
     };
 };
 
@@ -78,11 +80,8 @@
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         
         cpi = <400>;
-
-        /* * Y軸（上下）の反転を修正しました。
-         * X軸（左右）も逆の場合は、ここにある invert-x; を消してください。
-         */
         invert-x;
+        invert-y;
 
         evt-type = <INPUT_EV_REL>;
         x-input-code = <INPUT_REL_X>;
