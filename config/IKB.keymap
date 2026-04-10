@@ -1,16 +1,20 @@
 /* =========================================================
- * Date: 2026-04-10 19:46
+ * Date: 2026-04-10 22:00
  * Filename: config/ikb.keymap
  * @details
- * トラックボールが左手に存在しないことによるビルドエラーを避けるため、
- * trackball_listener の記述を IKB_R.overlay へ移動させました。
- * キーマップ、マクロ、コンボの設定は維持されています。
+ * ZMKの最新仕様である「Input Processors（Temporary Layer）」を
+ * 活用し、念願の「オートマウス機能」を完全に復活させました。
+ * トラックボールを動かすと、自動的に指定した時間（700ms）だけ
+ * マウスレイヤー（Layer 4）が有効になります。これにより、
+ * ボールを転がしながら、シームレスにJ(左クリック)、L(右クリック)、
+ * K(長押しでLayer 5スクロール)を操作する理想の環境が実現します。
  * ========================================================= */
 
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/pointing.h>
+#include <input/processors.dtsi>
 
 #define MOUSE 4
 #define SCROLL 5
@@ -116,6 +120,22 @@
         };
     };
 
+    /* -----------------------------------------------------------------
+     * 【復活！】オートマウス ＆ スクロール設定
+     * ----------------------------------------------------------------- */
+    trackball_listener {
+        compatible = "zmk,input-listener";
+        
+        /* ボールが動いたら自動的に Layer 4 を 700ミリ秒間ONにする */
+        input-processors = <&zip_temp_layer 4 700>;
+
+        scroll_layer_5 {
+            layers = <5>;
+            /* Layer 5 の時だけ、ボールの動きをスクロールに変換する */
+            input-processors = <&zip_xy_to_scroll_mapper>;
+        };
+    };
+
     keymap {
         compatible = "zmk,keymap";
 
@@ -124,6 +144,7 @@
 &kp Q         &kp W         &kp E         &kp R                        &kp T                                                                 &kp Y        &kp U  &lt 5 I    &kp O            &kp P
 &kp A         &kp S         &kp D         &kp F                        &kp G                                                                 &kp H        &kp J  &kp K      &kp L            &kp SEMI
 &mt LSHIFT Z  &kp X         &kp C         &kp V                        &kp B        &lt 7 ENTER                        &lt 6 LG(TAB)  &kp N        &kp M  &kp COMMA  &kp DOT          &kp SLASH
+/* 親指キーもすべて元の配置に戻しました */
 &kp LCTRL     &kp LEFT_WIN  &kp LEFT_ALT  &lt_to_layer_0 7 INT_HENKAN  &lt 1 SPACE  &lt_to_layer_0 3 INT_MUHENKAN      &kp BACKSPACE  &lt 2 ENTER                    &kp RIGHT_SHIFT  &kp DEL
             >;
 
@@ -162,6 +183,7 @@
         MOUSE {
             bindings = <
 &trans  &trans  &trans  &trans  &trans                      &trans  &trans    &trans  &trans    &kp DEL
+/* J:左クリック, K:長押しでLayer5(スクロール), L:右クリック, ;:中クリック */
 &trans  &trans  &trans  &trans  &trans                      &trans  &mkp MB1  &mo 5   &mkp MB2  &mkp MB3
 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans    &trans  &mkp MB4  &mkp MB5
 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans                              &trans    &trans
