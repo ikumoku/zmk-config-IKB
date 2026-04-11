@@ -1,9 +1,11 @@
 /* =========================================================
- * Date: 2026-04-11
+ * Date: 2026-04-12
  * Filename: config/ikb.keymap
  * @details
- * 左右で共通して読み込まれるため、特定のハードウェア(トラックボール)に
- * 依存するリスナー設定を完全に削除しました。
+ * レイヤー4(MOUSE)におけるキー割り当てを完全に整理しました。
+ * K(真ん中) ＝ レイヤー5(精密)
+ * カンマ(真下) ＝ レイヤー9(爆速)
+ * I(真上) ＝ 何もしない(透過)
  * ========================================================= */
 
 #include <behaviors.dtsi>
@@ -15,85 +17,27 @@
 #define MOUSE 4
 #define SCROLL 5
 #define NUM 6
+#define FAST_SCROLL 9
 
-&mt {
-    flavor = "balanced";
-    quick-tap-ms = <0>;
-};
+&mt { flavor = "balanced"; quick-tap-ms = <0>; };
 
 / {
     combos {
         compatible = "zmk,combos";
-
-        tab {
-            bindings = <&kp TAB>;
-            key-positions = <11 12>;
-        };
-
-        shift_tab {
-            bindings = <&kp LS(TAB)>;
-            key-positions = <12 13>;
-        };
-
-        muhennkann {
-            bindings = <&to_layer_0 INT_MUHENKAN>;
-            key-positions = <11 10>;
-        };
-
-        double_quotation {
-            bindings = <&kp DOUBLE_QUOTES>;
-            key-positions = <20 21>;
-        };
-
-        eq {
-            bindings = <&kp EQUAL>;
-            key-positions = <24 25>;
-        };
-
-        window_1 {
-            bindings = <&kp LC(LG(RIGHT_ARROW))>;
-            key-positions = <9 8>;
-        };
-
-        window_2 {
-            bindings = <&kp LC(LG(LEFT_ARROW))>;
-            key-positions = <18 19>;
-        };
-
-        vol_up {
-            bindings = <&kp C_VOLUME_UP>;
-            key-positions = <5 6>;
-        };
-
-        vol_down {
-            bindings = <&kp C_VOL_DN>;
-            key-positions = <15 16>;
-        };
-
-        mute {
-            bindings = <&kp C_MUTE>;
-            key-positions = <27 28>;
-        };
-
-        zoom_in {
-            bindings = <&kp LC(COLON)>;
-            key-positions = <6 7>;
-        };
-
-        zoom_out {
-            bindings = <&kp LC(MINUS)>;
-            key-positions = <16 17>;
-        };
-
-        layer8 {
-            bindings = <&to 8>;
-            key-positions = <6 7 8>;
-        };
-
-        layer0 {
-            bindings = <&to 0>;
-            key-positions = <16 17 18>;
-        };
+        tab { bindings = <&kp TAB>; key-positions = <11 12>; };
+        shift_tab { bindings = <&kp LS(TAB)>; key-positions = <12 13>; };
+        muhennkann { bindings = <&to_layer_0 INT_MUHENKAN>; key-positions = <11 10>; };
+        double_quotation { bindings = <&kp DOUBLE_QUOTES>; key-positions = <20 21>; };
+        eq { bindings = <&kp EQUAL>; key-positions = <24 25>; };
+        window_1 { bindings = <&kp LC(LG(RIGHT_ARROW))>; key-positions = <9 8>; };
+        window_2 { bindings = <&kp LC(LG(LEFT_ARROW))>; key-positions = <18 19>; };
+        vol_up { bindings = <&kp C_VOLUME_UP>; key-positions = <5 6>; };
+        vol_down { bindings = <&kp C_VOL_DN>; key-positions = <15 16>; };
+        mute { bindings = <&kp C_MUTE>; key-positions = <27 28>; };
+        zoom_in { bindings = <&kp LC(COLON)>; key-positions = <6 7>; };
+        zoom_out { bindings = <&kp LC(MINUS)>; key-positions = <16 17>; };
+        layer8 { bindings = <&to 8>; key-positions = <6 7 8>; };
+        layer0 { bindings = <&to 0>; key-positions = <16 17 18>; };
     };
 
     macros {
@@ -110,7 +54,6 @@
             compatible = "zmk,behavior-hold-tap";
             label = "LAYER_TAP_TO_0";
             bindings = <&mo>, <&to_layer_0>;
-
             #binding-cells = <2>;
             tapping-term-ms = <200>;
         };
@@ -121,13 +64,11 @@
 
         default_layer {
             bindings = <
-&kp Q         &kp W         &kp E         &kp R                        &kp T                                                                 &kp Y        &kp U  &lt 5 I    &kp O            &kp P
+&kp Q         &kp W         &kp E         &kp R                        &kp T                                                                 &kp Y        &kp U  &kp I      &kp O            &kp P
 &kp A         &kp S         &kp D         &kp F                        &kp G                                                                 &kp H        &kp J  &kp K      &kp L            &kp SEMI
 &mt LSHIFT Z  &kp X         &kp C         &kp V                        &kp B        &lt 7 ENTER                        &lt 6 LG(TAB)  &kp N        &kp M  &kp COMMA  &kp DOT          &kp SLASH
 &kp LCTRL     &kp LEFT_WIN  &kp LEFT_ALT  &lt_to_layer_0 7 INT_HENKAN  &lt 1 SPACE  &lt_to_layer_0 3 INT_MUHENKAN      &kp BACKSPACE  &lt 2 ENTER                    &kp RIGHT_SHIFT  &kp DEL
             >;
-
-            sensor-bindings = <&inc_dec_kp PG_UP PAGE_DOWN>;
         };
 
         FUNCTION {
@@ -155,16 +96,17 @@
 &kp LA(NUMBER_3)  &trans           &kp LEFT_SHIFT  &kp LG(LS(LEFT_ARROW))  &kp LS(LG(S))  &kp LG(LS(RIGHT_ARROW))      &trans  &kp LS(NUMBER_3)  &kp AT_SIGN      &kp AT         &kp NON_US_BACKSLASH  &trans
 &trans            &trans           &trans          &trans                  &trans         &trans                       &trans  &trans                                                                    &trans                &trans
             >;
-
-            sensor-bindings = <&inc_dec_kp LC(PAGE_UP) LC(PAGE_DOWN)>;
         };
 
         MOUSE {
             bindings = <
+/* 1段目 (IはtransなのでLayer0のIとして動く) */
 &trans  &trans  &trans  &trans  &trans                      &trans  &trans    &trans  &trans    &kp DEL
-/* J:左クリック, K:長押しでLayer5(スクロール), L:右クリック, ;:中クリック */
+/* 2段目 (K(RC 1,8) ＝ 精密スクロール Layer 5) */
 &trans  &trans  &trans  &trans  &trans                      &trans  &mkp MB1  &mo 5   &mkp MB2  &mkp MB3
-&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans    &trans  &mkp MB4  &mkp MB5
+/* 3段目 (COMMA(RC 2,8) ＝ 爆速スクロール Layer 9) */
+&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans    &mo 9   &mkp MB4  &mkp MB5
+/* 4段目 */
 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans                              &trans    &trans
             >;
         };
@@ -202,6 +144,15 @@
 &trans  &trans  &trans  &trans  &trans                      &kp F           &trans           &lt 5 I  &trans  &kp DOWN_ARROW
 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &kp LEFT_ARROW  &kp RIGHT_ARROW  &trans   &trans  &trans
 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans                                            &trans  &trans
+            >;
+        };
+
+        FAST_SCROLL {
+            bindings = <
+&trans  &trans  &trans  &trans  &trans                      &kp R               &kp D                &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans                      &kp LA(RIGHT)       &kp LA(LEFT_ARROW)   &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans      &trans  &kp LS(LEFT_ARROW)  &kp LS(RIGHT_ARROW)  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans                                                   &trans  &trans
             >;
         };
     };
