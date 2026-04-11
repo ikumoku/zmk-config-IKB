@@ -1,10 +1,10 @@
 /* =========================================================
- * Date: 2026-04-12 18:00
+ * Date: 2026-04-12
  * Filename: config/boards/shields/Test/IKB_R.overlay
  * @details
- * スクロールの上下反転と感度（細かさ）を調整するため、
- * ZMK公式のプロセッサである `zip_scroll_scaler` を追加しました。
- * 存在しないカスタムプロセッサの記述を削除したためビルドエラーは解消されます。
+ * 新たに高速スクロール用の Layer 9 を追加しました。
+ * zip_scroll_scaler の分母を 20 から 5 に減らすことで、
+ * ボールの少しの回転で画面が大きく（4倍）スクロールするようになります。
  * ========================================================= */
 
 #include "IKB.dtsi"
@@ -35,14 +35,19 @@
 
         scroll_layer_5 {
             layers = <5>;
-            /* * 【修正】公式機能の連結（チェーン）
-             * 1. zip_xy_to_scroll_mapper : ボールの動きをスクロールに変換
-             * 2. zip_scroll_scaler : 縦スクロールを 反転(-1) し、20分の1の細かさ(20) にする
-             * ※さらに細かくしたい場合は 20 を 30 や 40 に変更してください。
-             */
+            /* 通常スクロール（Kキー）: 分母20で細かく */
             input-processors = 
                 <&zip_xy_to_scroll_mapper>,
-                <&zip_scroll_scaler (-1) 20>;
+                <&zip_scroll_scaler (-1) 30>;
+        };
+
+        fast_scroll_layer_9 {
+            layers = <9>;
+            /* 高速スクロール（Kの下のキー）: 分母5で大きく */
+            /* ※さらに速くしたい場合は 5 を 3 や 2 に変更してください */
+            input-processors = 
+                <&zip_xy_to_scroll_mapper>,
+                <&zip_scroll_scaler (-1) 5>;
         };
     };
 };
