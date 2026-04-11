@@ -2,9 +2,9 @@
  * Date: 2026-04-12 18:00
  * Filename: config/boards/shields/Test/IKB_R.overlay
  * @details
- * スクロールの上下反転と感度調整のカスタムプロセッサに、
- * 必須プロパティである `#input-processor-cells = <0>;` を追加し、
- * ビルドエラー（lacks #input-processor-cells）を修正しました。
+ * スクロールの上下反転と感度（細かさ）を調整するため、
+ * ZMK公式のプロセッサである `zip_scroll_scaler` を追加しました。
+ * 存在しないカスタムプロセッサの記述を削除したためビルドエラーは解消されます。
  * ========================================================= */
 
 #include "IKB.dtsi"
@@ -27,22 +27,6 @@
 };
 
 / {
-    /* ---------------------------------------------------
-     * スクロール変換のカスタム設定
-     * --------------------------------------------------- */
-    my_scroll_mapper: my_scroll_mapper {
-        compatible = "zmk,input-processor-scroll-mapper";
-        #input-processor-cells = <0>; /* ← 【修正】これを追加！ */
-        y-param = <(-100)>;
-        x-param = <100>;
-    };
-
-    my_scroll_divisor: my_scroll_divisor {
-        compatible = "zmk,input-processor-scroll-divisor";
-        #input-processor-cells = <0>; /* ← 【修正】これを追加！ */
-        divisor = <20>;
-    };
-
     trackball_listener {
         compatible = "zmk,input-listener";
         device = <&trackball>; 
@@ -51,8 +35,14 @@
 
         scroll_layer_5 {
             layers = <5>;
-            /* 上記で作成した「反転マッパー」と「細かくするデバイザ」を適用します */
-            input-processors = <&my_scroll_mapper>, <&my_scroll_divisor>;
+            /* * 【修正】公式機能の連結（チェーン）
+             * 1. zip_xy_to_scroll_mapper : ボールの動きをスクロールに変換
+             * 2. zip_scroll_scaler : 縦スクロールを 反転(-1) し、20分の1の細かさ(20) にする
+             * ※さらに細かくしたい場合は 20 を 30 や 40 に変更してください。
+             */
+            input-processors = 
+                <&zip_xy_to_scroll_mapper>,
+                <&zip_scroll_scaler (-1) 20>;
         };
     };
 };
