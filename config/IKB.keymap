@@ -2,10 +2,8 @@
  * Date: 2026-04-11
  * Filename: config/ikb.keymap
  * @details
- * デバイス指定（device = <&trackball>;）をあえて書かない
- * 汎用リスナーを記述した完全版です。
- * これにより左手(親機)のビルドエラーを回避しつつ、親機側で
- * ZMK公式のオートマウス(Layer 4)とスクロール(Layer 5)が完璧に機能します。
+ * 左右で共通して読み込まれるため、特定のハードウェア(トラックボール)に
+ * 依存するリスナー設定を完全に削除しました。
  * ========================================================= */
 
 #include <behaviors.dtsi>
@@ -115,23 +113,6 @@
 
             #binding-cells = <2>;
             tapping-term-ms = <200>;
-        };
-    };
-
-    /* -----------------------------------------------------------------
-     * 【完成版】デバイス指定なしの汎用リスナー
-     * ----------------------------------------------------------------- */
-    trackball_listener {
-        compatible = "zmk,input-listener";
-        /* 【重要】 device = <&trackball>; を書かないことで左手のエラーを回避します */
-
-        /* ボールが動いたら自動的に Layer 4(MOUSE) を 700ms アクティブにする */
-        input-processors = <&zip_temp_layer 4 700>;
-
-        scroll_layer_5 {
-            /* Layer 5 の時だけ、ボールの動きをスクロールに変換する */
-            layers = <5>;
-            input-processors = <&zip_xy_to_scroll_mapper>;
         };
     };
 
