@@ -81,7 +81,7 @@
         
         cpi = <400>;
         invert-x;
-        invert-y;
+        /* invert-y; */
 
         evt-type = <INPUT_EV_REL>;
         x-input-code = <INPUT_REL_X>;
