@@ -1,20 +1,15 @@
 /* =========================================================
- * Date: 2026-04-10 20:15
+ * Date: 2026-04-11
  * Filename: config/boards/shields/Test/IKB_R.overlay
  * @details
- * 右手側（IKB_R）のハードウェア定義ファイルです。
- * スクロール変換プロセッサ（zip_xy_to_scroll_mapper）を正しく
- * 認識させるため、専用の辞書ファイル（input/processors.dtsi）を
- * インクルードしました。これでビルドエラーが解消されます。
+ * トラックボールの上下反転を直すため invert-y を無効化しました。
+ * また、左手(IKB_L)のビルドエラーを防ぐため、リスナーブロックは
+ * 完全に削除し、ikb.keymap 側に移動しています。
  * ========================================================= */
 
 #include "IKB.dtsi"
 #include <zephyr/dt-bindings/input/input-event-codes.h>
 #include <dt-bindings/zmk/pointing.h>
-
-/* ---------------------------------------------------
- * 【修正】正しい入力プロセッサ用の辞書ファイルを読み込む
- * --------------------------------------------------- */
 #include <input/processors.dtsi>
 
 &default_transform {
@@ -29,18 +24,6 @@
         , <&xiao_d 7 GPIO_ACTIVE_HIGH> 
         , <&gpio0 10 GPIO_ACTIVE_HIGH>
         ;
-};
-
-/ {
-    trackball_listener {
-        compatible = "zmk,input-listener";
-        device = <&trackball>;
-
-        scroll_layer_5 {
-            layers = <5>;
-            input-processors = <&zip_xy_to_scroll_mapper>;
-        };
-    };
 };
 
 &pinctrl {
@@ -81,7 +64,7 @@
         
         cpi = <400>;
         invert-x;
-        /* invert-y; */
+        /* invert-y; ← ここをコメントアウトして上下反転を修正しました */
 
         evt-type = <INPUT_EV_REL>;
         x-input-code = <INPUT_REL_X>;
