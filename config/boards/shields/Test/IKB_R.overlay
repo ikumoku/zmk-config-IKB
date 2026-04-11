@@ -1,10 +1,6 @@
 /* =========================================================
  * Date: 2026-04-11
  * Filename: config/boards/shields/Test/IKB_R.overlay
- * @details
- * トラックボールの上下反転を直すため invert-y を無効化しました。
- * また、左手(IKB_L)のビルドエラーを防ぐため、リスナーブロックは
- * 完全に削除し、ikb.keymap 側に移動しています。
  * ========================================================= */
 
 #include "IKB.dtsi"
@@ -24,6 +20,21 @@
         , <&xiao_d 7 GPIO_ACTIVE_HIGH> 
         , <&gpio0 10 GPIO_ACTIVE_HIGH>
         ;
+};
+
+/* 【重要】リスナーの設定は、トラックボールの実体がある右手側にのみ記述します */
+/ {
+    trackball_listener {
+        compatible = "zmk,input-listener";
+        device = <&trackball>; /* ← これが必須です */
+
+        input-processors = <&zip_temp_layer 4 700>;
+
+        scroll_layer_5 {
+            layers = <5>;
+            input-processors = <&zip_xy_to_scroll_mapper>;
+        };
+    };
 };
 
 &pinctrl {
@@ -64,7 +75,7 @@
         
         cpi = <400>;
         invert-x;
-        /* invert-y; ← ここをコメントアウトして上下反転を修正しました */
+        /* invert-y; ← コメントアウトで上下反転を直しています */
 
         evt-type = <INPUT_EV_REL>;
         x-input-code = <INPUT_REL_X>;
