@@ -1,9 +1,10 @@
 /* =========================================================
- * Date: 2026-04-12
+ * Date: 2026-04-12 17:37
  * Filename: config/boards/shields/Test/IKB_R.overlay
  * @details
- * スクロール感度の差を極限まで広げ（40 vs 1）、
- * レイヤーの優先順位を明確に定義して速度変更が確実に反映されるようにしました。
+ * 標準スクロール（Layer 5）の分母を 40 から 15 に変更し、
+ * 通常のブラウジングで反応良く、かつ精密に動かせるように調整しました。
+ * 爆速スクロール（Layer 9）は分母 1 のまま維持しています。
  * ========================================================= */
 
 #include "IKB.dtsi"
@@ -28,16 +29,17 @@
         compatible = "zmk,input-listener";
         device = <&trackball>; 
 
-        /* ボールを動かすと700msだけレイヤー4(MOUSE)へ */
+        /* ボールを動かすと700msだけレイヤー4(MOUSE)へ移行 */
         input-processors = <&zip_temp_layer 4 700>;
 
-        /* 精密スクロール (Layer 5): Kキーを押している間 */
+        /* 精密スクロール (Layer 5): Kキー（通常スクロール） */
         precise_scroll {
             layers = <5>;
-            input-processors = <&zip_xy_to_scroll_mapper>, <&zip_scroll_scaler (-1) 40>;
+            /* 【変更】分母を15にして反応を良くしました */
+            input-processors = <&zip_xy_to_scroll_mapper>, <&zip_scroll_scaler (-1) 15>;
         };
 
-        /* 爆速スクロール (Layer 9): カンマ(Kの真下)キーを押している間 */
+        /* 爆速スクロール (Layer 9): カンマキー（爆速スクロール） */
         fast_scroll {
             layers = <9>;
             input-processors = <&zip_xy_to_scroll_mapper>, <&zip_scroll_scaler (-1) 1>;
