@@ -1,9 +1,10 @@
 /* =========================================================
- * Date: 2026-04-16
+ * Date: 2026-04-18
  * Filename: config/boards/shields/Test/IKB_R.overlay
  * @details
  * 【修正2】zip_temp_layer のタイムアウトを 700ms → 300ms に短縮
  * 【修正3】SPI周波数を 2MHz → 1MHz に低下
+ * 【修正4】スクロール時の左右反転を修正（-1 → 1）
  * =========================================================
  */
 #include "IKB.dtsi"
@@ -34,13 +35,15 @@
         /* 精密スクロール (Layer 5) */
         precise_scroll {
             layers = <5>;
-            input-processors = <&zip_xy_to_scroll_mapper>, <&zip_scroll_scaler (-1) 15>;
+            /* 【修正4】-1 → 1 に変更（左右反転を修正） */
+            input-processors = <&zip_xy_to_scroll_mapper>, <&zip_scroll_scaler 1 15>;
         };
 
         /* 爆速スクロール (Layer 9) */
         fast_scroll {
             layers = <9>;
-            input-processors = <&zip_xy_to_scroll_mapper>, <&zip_scroll_scaler (-1) 1>;
+            /* 【修正4】-1 → 1 に変更（左右反転を修正） */
+            input-processors = <&zip_xy_to_scroll_mapper>, <&zip_scroll_scaler 1 1>;
         };
     };
 };
@@ -88,4 +91,4 @@
     };
 };
 
-&usbd { status = "okay"; };
+&usbd { status = "okay"; };j
