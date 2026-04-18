@@ -1,10 +1,6 @@
 /* =========================================================
  * Date: 2026-04-18
  * Filename: config/boards/shields/Test/IKB_R.overlay
- * @details
- * 【修正2】zip_temp_layer のタイムアウトを 700ms → 300ms に短縮
- * 【修正3】SPI周波数を 2MHz → 1MHz に低下
- * 【修正4】スクロール時の左右反転を修正（-1 → 1）
  * =========================================================
  */
 #include "IKB.dtsi"
@@ -28,21 +24,15 @@
     trackball_listener {
         compatible = "zmk,input-listener";
         device = <&trackball>;
-
-        /* 【修正2】700ms → 300ms に短縮 */
         input-processors = <&zip_temp_layer 4 300>;
 
-        /* 精密スクロール (Layer 5) */
         precise_scroll {
             layers = <5>;
-            /* 【修正4】-1 → 1 に変更（左右反転を修正） */
             input-processors = <&zip_xy_to_scroll_mapper>, <&zip_scroll_scaler 1 15>;
         };
 
-        /* 爆速スクロール (Layer 9) */
         fast_scroll {
             layers = <9>;
-            /* 【修正4】-1 → 1 に変更（左右反転を修正） */
             input-processors = <&zip_xy_to_scroll_mapper>, <&zip_scroll_scaler 1 1>;
         };
     };
@@ -80,7 +70,6 @@
         status = "okay";
         compatible = "pixart,pmw3610-alt";
         reg = <0>;
-        /* 【修正3】2000000 → 1000000 に低下 */
         spi-max-frequency = <1000000>;
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         cpi = <400>;
@@ -91,4 +80,4 @@
     };
 };
 
-&usbd { status = "okay"; };j
+&usbd { status = "okay"; };
