@@ -1,5 +1,5 @@
 /* =========================================================
- * Date: 2026-04-18
+ * Date: 2026-04-19
  * Filename: config/boards/shields/Test/IKB_R.overlay
  * =========================================================
  */
@@ -24,7 +24,7 @@
     trackball_listener {
         compatible = "zmk,input-listener";
         device = <&trackball>;
-        input-processors = <&zip_temp_layer 4 300>;
+        input-processors = <&zip_temp_layer 4 500>;
 
         precise_scroll {
             layers = <5>;
@@ -74,6 +74,7 @@
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         cpi = <400>;
         invert-x;
+        invert-y;
         evt-type = <INPUT_EV_REL>;
         x-input-code = <INPUT_REL_X>;
         y-input-code = <INPUT_REL_Y>;
