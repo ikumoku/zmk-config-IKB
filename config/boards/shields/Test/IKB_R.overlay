@@ -1,84 +1,55 @@
-/* =========================================================
- * Date: 2026-04-19
- * Filename: config/boards/shields/Test/IKB_R.overlay
- * =========================================================
- */
-#include "IKB.dtsi"
-#include <zephyr/dt-bindings/input/input-event-codes.h>
-#include <dt-bindings/zmk/pointing.h>
-#include <input/processors.dtsi>
+# =========================================================
+# Date: 2026-04-19
+# Filename: config/boards/shields/Test/IKB_R.conf
+# =========================================================
 
-&default_transform { col-offset = <6>; };
+CONFIG_ZMK_KEYBOARD_NAME="IKB_2"
 
-&kscan0 {
-    col-gpios
-        = <&xiao_d 10 GPIO_ACTIVE_HIGH>
-        , <&xiao_d 9 GPIO_ACTIVE_HIGH>
-        , <&xiao_d 8 GPIO_ACTIVE_HIGH>
-        , <&xiao_d 7 GPIO_ACTIVE_HIGH>
-        , <&gpio0 10 GPIO_ACTIVE_HIGH>
-        ;
-};
+# --- Basic features ---
+CONFIG_ZMK_MOUSE=y
+CONFIG_NFCT_PINS_AS_GPIOS=y
+CONFIG_ZMK_BLE=y
+CONFIG_SPI=y
+CONFIG_INPUT=y
 
-/ {
-    trackball_listener {
-        compatible = "zmk,input-listener";
-        device = <&trackball>;
-        input-processors = <&zip_temp_layer 4 500>;
+# --- Disable ZMK Studio ---
+CONFIG_ZMK_STUDIO=n
 
-        precise_scroll {
-            layers = <5>;
-            input-processors = <&zip_xy_to_scroll_mapper>, <&zip_scroll_scaler 1 15>;
-        };
+# --- Sensor settings ---
+CONFIG_ZMK_POINTING=y
+CONFIG_PMW3610_ALT=y
+CONFIG_PMW3610_ALT_SMART_ALGORITHM=n
 
-        fast_scroll {
-            layers = <9>;
-            input-processors = <&zip_xy_to_scroll_mapper>, <&zip_scroll_scaler 1 1>;
-        };
-    };
-};
+# --- Invert Y axis (Kconfig method, works when devicetree method fails) ---
+CONFIG_PMW3610_ALT_INVERT_Y=y
 
-&pinctrl {
-    spi0_default: spi0_default {
-        group1 {
-            psels = <NRF_PSEL(SPIM_SCK, 0, 5)>,
-                    <NRF_PSEL(SPIM_MOSI, 0, 4)>,
-                    <NRF_PSEL(SPIM_MISO, 0, 4)>;
-        };
-    };
-    spi0_sleep: spi0_sleep {
-        group1 {
-            psels = <NRF_PSEL(SPIM_SCK, 0, 5)>,
-                    <NRF_PSEL(SPIM_MOSI, 0, 4)>,
-                    <NRF_PSEL(SPIM_MISO, 0, 4)>;
-            low-power-enable;
-        };
-    };
-};
+# --- BLE power ---
+CONFIG_BT_CTLR_TX_PWR_PLUS_8=y
 
-&xiao_serial { status = "disabled"; };
+# --- Disable sleep and battery reporting ---
+CONFIG_ZMK_SLEEP=n
+CONFIG_ZMK_BATTERY_REPORTING=n
+CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING=n
+CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_PROXY=n
 
-&spi0 {
-    status = "okay";
-    compatible = "nordic,nrf-spim";
-    pinctrl-0 = <&spi0_default>;
-    pinctrl-1 = <&spi0_sleep>;
-    pinctrl-names = "default", "sleep";
-    cs-gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;
+# --- Stack sizes (freeze prevention) ---
+CONFIG_SYSTEM_WORKQUEUE_STACK_SIZE=8192
+CONFIG_MAIN_STACK_SIZE=4096
+CONFIG_BT_RX_STACK_SIZE=4096
 
-    trackball: trackball@0 {
-        status = "okay";
-        compatible = "pixart,pmw3610-alt";
-        reg = <0>;
-        spi-max-frequency = <1000000>;
-        irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        cpi = <400>;
-        invert-x;
-        invert-y;
-        evt-type = <INPUT_EV_REL>;
-        x-input-code = <INPUT_REL_X>;
-        y-input-code = <INPUT_REL_Y>;
-    };
-};
+# --- BLE buffer sizes (EVT_RX must be > ACL_TX) ---
+CONFIG_BT_L2CAP_TX_BUF_COUNT=10
+CONFIG_BT_BUF_ACL_TX_COUNT=10
+CONFIG_BT_BUF_EVT_RX_COUNT=16
+CONFIG_BT_BUF_CMD_TX_COUNT=4
 
-&usbd { status = "okay"; };
+# --- BLE connection interval tuning ---
+CONFIG_BT_PERIPHERAL_PREF_MIN_INT=6
+CONFIG_BT_PERIPHERAL_PREF_MAX_INT=12
+CONFIG_BT_PERIPHERAL_PREF_LATENCY=30
+CONFIG_BT_PERIPHERAL_PREF_TIMEOUT=400
+
+# --- Split keyboard BLE optimization ---
+CONFIG_ZMK_SPLIT_BLE_PREF_INT=6
+CONFIG_ZMK_SPLIT_BLE_PREF_LATENCY=30
+CONFIG_ZMK_SPLIT_BLE_PREF_TIMEOUT=400
