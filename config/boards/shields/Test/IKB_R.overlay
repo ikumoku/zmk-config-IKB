@@ -28,12 +28,12 @@
 
         precise_scroll {
             layers = <5>;
-            input-processors = <&zip_xy_to_scroll_mapper>, <&zip_scroll_scaler 1 15>;
+            input-processors = <&zip_xy_to_scroll_mapper>, <&zip_scroll_scaler 1 (-15)>;
         };
 
         fast_scroll {
             layers = <9>;
-            input-processors = <&zip_xy_to_scroll_mapper>, <&zip_scroll_scaler 1 1>;
+            input-processors = <&zip_xy_to_scroll_mapper>, <&zip_scroll_scaler 1 (-1)>;
         };
     };
 };
