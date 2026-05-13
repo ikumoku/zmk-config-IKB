@@ -1,4 +1,4 @@
-/* =========================================================
+jjjjjjj/* =========================================================
  * Date: 2026-04-19
  * Filename: config/boards/shields/Test/IKB_R.overlay
  * =========================================================
@@ -31,7 +31,8 @@
     trackball_listener {
         compatible = "zmk,input-listener";
         device = <&trackball>;
-        input-processors = <&zip_temp_layer 4 500>;
+        //input-processors = <&zip_temp_layer 4 500>;
+        input-processors = <&zip_temp_layer 4 1000>;
 
         precise_scroll {
             layers = <5>;
